@@ -1,0 +1,36 @@
+Arguments: 
+  /root/.fnm/node-versions/v15.5.0/installation/bin/node /usr/sbin/yarn init
+
+PATH: 
+  /root/win32yank-x64:/tmp/fnm_multishell_1420_1609741679123/bin:/root/.fnm:/root/.local/bin:/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Python38/Scripts:/mnt/c/Python38:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0:/mnt/c/Windows/System32/OpenSSH:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Yarn/bin:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Program Files/Java/jdk1.8.0_211/bin:/mnt/c/ProgramData/nvm:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/dotnet:/mnt/c/Users/Abdiel/AppData/Local/Programs/Python/Python37-32/Scripts:/mnt/c/Users/Abdiel/AppData/Local/Programs/Python/Python37-32:/mnt/c/Users/Abdiel/scoop/shims:/mnt/c/Users/Abdiel/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Abdiel/AppData/Local/GitHubDesktop/bin:/mnt/c/Users/Abdiel/AppData/Local/hyper/app-3.0.2/resources/bin:/mnt/c/tools/neovim/Neovim/bin:/mnt/c/Users/Abdiel/AppData/Local/Yarn/bin:/mnt/c/Program Files/heroku/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  15.5.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: canceled
+      at Interface.<anonymous> (/usr/lib/node_modules/yarn/lib/cli.js:137009:13)
+      at Interface.emit (node:events:376:20)
+      at Interface._ttyWrite (node:readline:909:16)
+      at ReadStream.onkeypress (node:readline:234:10)
+      at ReadStream.emit (node:events:376:20)
+      at emitKeys (node:internal/readline/utils:358:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (node:readline:1178:36)
+      at ReadStream.emit (node:events:376:20)
+      at addChunk (node:internal/streams/readable:311:12)
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
