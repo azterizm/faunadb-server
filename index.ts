@@ -2,11 +2,13 @@ import express from 'express'
 import faunadb, { query } from 'faunadb'
 import cors from 'cors'
 
+require('dotenv/config')
 const app = express()
 const PORT = process.env.PORT ?? 5000
 
 const client = new faunadb.Client({ secret: process.env.DB_LOGIN_KEY ?? '' })
-const { Call, Function, Map, Paginate, Match, Index, Lambda, Get, Select } = query
+console.log(process.env)
+const { Create, Collection, CurrentIdentity, Call, Function, Map, Paginate, Match, Index, Lambda, Get, Select } = query
 
 app.use(express.json())
 app.use(cors())
@@ -24,10 +26,38 @@ app.post('/login', async (req, res) => {
   }
 })
 
+// TODO: Add authorization middleware
+app.post('/add', async (req, res) => {
+  const { authorization } = req.headers
+  if (!authorization) {
+    return res.sendStatus(401)
+  }
+
+  const { 1: token } = (authorization as string | '').split('Bearer ')
+
+  const client = new faunadb.Client({ secret: token })
+  try {
+    const { title } = req.body
+    await client.query(
+      Create(Collection('Todo'), {
+        data: {
+          title,
+          completed: false,
+          user: CurrentIdentity()
+        }
+      })
+    )
+
+    res.sendStatus(200)
+  } catch (error) {
+    return res.status(400).send(error)
+  }
+})
+
 app.get('/', async (req, res) => {
   const { authorization } = req.headers
   if (!authorization) {
-    return res.sendStatus(404)
+    return res.sendStatus(401)
   }
 
   const { 1: token } = (authorization as string | '').split('Bearer ')
@@ -46,5 +76,6 @@ app.get('/', async (req, res) => {
     return res.status(400).send(error)
   }
 })
+
 
 app.listen(PORT, () => console.log(`Server at ${PORT}`))

@@ -35,10 +35,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const faunadb_1 = __importStar(require("faunadb"));
 const cors_1 = __importDefault(require("cors"));
+require('dotenv/config');
 const app = express_1.default();
 const PORT = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 5000;
 const client = new faunadb_1.default.Client({ secret: (_b = process.env.DB_LOGIN_KEY) !== null && _b !== void 0 ? _b : '' });
-const { Call, Function, Map, Paginate, Match, Index, Lambda, Get, Select } = faunadb_1.query;
+console.log(process.env);
+const { Create, Collection, CurrentIdentity, Call, Function, Map, Paginate, Match, Index, Lambda, Get, Select } = faunadb_1.query;
 app.use(express_1.default.json());
 app.use(cors_1.default());
 app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,10 +53,33 @@ app.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(404).send(error);
     }
 }));
+// TODO: Add authorization middleware
+app.post('/add', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { authorization } = req.headers;
+    if (!authorization) {
+        return res.sendStatus(401);
+    }
+    const { 1: token } = authorization.split('Bearer ');
+    const client = new faunadb_1.default.Client({ secret: token });
+    try {
+        const { title } = req.body;
+        yield client.query(Create(Collection('Todo'), {
+            data: {
+                title,
+                completed: false,
+                user: CurrentIdentity()
+            }
+        }));
+        res.sendStatus(200);
+    }
+    catch (error) {
+        return res.status(400).send(error);
+    }
+}));
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { authorization } = req.headers;
     if (!authorization) {
-        return res.sendStatus(404);
+        return res.sendStatus(401);
     }
     const { 1: token } = authorization.split('Bearer ');
     const client = new faunadb_1.default.Client({ secret: token });
