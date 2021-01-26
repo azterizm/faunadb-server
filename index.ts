@@ -7,6 +7,11 @@ import { Strategy as BearerStrategy } from 'passport-http-bearer'
 require('dotenv/config')
 const app = express()
 const PORT = process.env.PORT ?? 5000
+
+app.get('/greet', (req, res) => {
+  res.send('API is right here!')
+})
+
 let client = new faunadb.Client({ secret: process.env.DB_LOGIN_KEY ?? '' })
 const { Create, Collection, CurrentIdentity, Call, Function, Map, Paginate, Match, Index, Lambda, Get, Select } = query
 
