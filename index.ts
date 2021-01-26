@@ -23,7 +23,7 @@ passport.use(new BearerStrategy(async (token, done) => {
 }))
 
 app.use(express.json())
-app.use(cors({ preflightContinue: true }))
+app.use(cors())
 
 app.post('/login', async (req, res) => {
   try {
