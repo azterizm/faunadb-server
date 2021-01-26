@@ -4,8 +4,6 @@ import cors from 'cors'
 import passport from 'passport'
 import { Strategy as BearerStrategy } from 'passport-http-bearer'
 
-console.log('')
-
 require('dotenv/config')
 const app = express()
 const PORT = process.env.PORT ?? 5000
