@@ -4,11 +4,14 @@ import cors from 'cors'
 import passport from 'passport'
 import { Strategy as BearerStrategy } from 'passport-http-bearer'
 
+console.log('')
+
 require('dotenv/config')
 const app = express()
 const PORT = process.env.PORT ?? 5000
 let client = new faunadb.Client({ secret: process.env.DB_LOGIN_KEY ?? '' })
 const { Create, Collection, CurrentIdentity, Call, Function, Map, Paginate, Match, Index, Lambda, Get, Select } = query
+console.log(process.env)
 
 passport.use(new BearerStrategy(async (token, done) => {
   client = new faunadb.Client({ secret: token })
@@ -39,6 +42,8 @@ app.post('/login', async (req, res) => {
   }
 })
 
+app.use(passport.authenticate('bearer', { session: false }))
+
 app.post('/add', async (req, res) => {
   try {
     const { title } = req.body
@@ -58,8 +63,7 @@ app.post('/add', async (req, res) => {
   }
 })
 
-app.get('/', passport.authenticate('bearer', { session: false  }), async (req, res) => {
-  console.log(req.user)
+app.get('/', async (_, res) => {
   try {
     const data = await client.query(
       Map(
