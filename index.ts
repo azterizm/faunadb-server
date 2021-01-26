@@ -1,17 +1,33 @@
 import express from 'express'
 import faunadb, { query } from 'faunadb'
 import cors from 'cors'
+import passport from 'passport'
+import { Strategy as BearerStrategy } from 'passport-http-bearer'
+
+console.log('')
 
 require('dotenv/config')
 const app = express()
 const PORT = process.env.PORT ?? 5000
-
-const client = new faunadb.Client({ secret: process.env.DB_LOGIN_KEY ?? '' })
-console.log(process.env)
+let client = new faunadb.Client({ secret: process.env.DB_LOGIN_KEY ?? '' })
 const { Create, Collection, CurrentIdentity, Call, Function, Map, Paginate, Match, Index, Lambda, Get, Select } = query
+console.log(process.env)
+
+passport.use(new BearerStrategy(async (token, done) => {
+  client = new faunadb.Client({ secret: token })
+  try {
+    const user = await client.query(
+      Select('data', Get(CurrentIdentity()))
+    )
+    return done(null, user)
+  } catch (err) {
+    return done(err)
+  }
+}))
 
 app.use(express.json())
 app.use(cors())
+app.use(passport.initialize())
 
 app.post('/login', async (req, res) => {
   try {
@@ -26,16 +42,9 @@ app.post('/login', async (req, res) => {
   }
 })
 
-// TODO: Add authorization middleware
+app.use(passport.authenticate('bearer', { session: false }))
+
 app.post('/add', async (req, res) => {
-  const { authorization } = req.headers
-  if (!authorization) {
-    return res.sendStatus(401)
-  }
-
-  const { 1: token } = (authorization as string | '').split('Bearer ')
-
-  const client = new faunadb.Client({ secret: token })
   try {
     const { title } = req.body
     await client.query(
@@ -54,15 +63,7 @@ app.post('/add', async (req, res) => {
   }
 })
 
-app.get('/', async (req, res) => {
-  const { authorization } = req.headers
-  if (!authorization) {
-    return res.sendStatus(401)
-  }
-
-  const { 1: token } = (authorization as string | '').split('Bearer ')
-
-  const client = new faunadb.Client({ secret: token })
+app.get('/', async (_, res) => {
   try {
     const data = await client.query(
       Map(
