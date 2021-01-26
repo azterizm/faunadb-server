@@ -1,6 +1,7 @@
 import express from 'express'
 import faunadb, { query } from 'faunadb'
 import passport from 'passport'
+import cors from 'cors'
 import { Strategy as BearerStrategy } from 'passport-http-bearer'
 
 require('dotenv/config')
@@ -22,6 +23,7 @@ passport.use(new BearerStrategy(async (token, done) => {
 }))
 
 app.use(express.json())
+app.use(cors({ preflightContinue: true }))
 
 app.post('/login', async (req, res) => {
   try {
